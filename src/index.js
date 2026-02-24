@@ -1,13 +1,21 @@
 import dotenv from "dotenv";
 import { app } from "./app.js";
-import connectDB from "./db/index.js";
-dotenv.config({path: "./env"});
+import { db } from "./db/firebase.js";
 
-connectDB()
-.then(() => {
-    app.listen(process.env.PORT,() =>{
-        console.log(`server is  running on port : ${process.env.PORT}`)
-    })
-}).catch((err) => {
-    console.log("MONGO DB MCONTION FAILED !!!",err)
-});
+dotenv.config({path: "./.env"});
+
+// Initialize Firebase and start server
+try {
+    // Test Firebase connection
+    const testDoc = await db.collection("_health").doc("check").get();
+    console.log("Firebase initialized successfully");
+    
+    const PORT = process.env.PORT || 3000;
+    // Bind to 0.0.0.0 so Android emulator/device can connect to host machine
+    app.listen(PORT, "0.0.0.0", () => {
+        console.log(`Server is running on port: ${PORT}`);
+    });
+} catch (err) {
+    console.error("Firebase initialization failed !!!", err);
+    process.exit(1);
+}

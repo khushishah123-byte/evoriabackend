@@ -1,13 +1,13 @@
 import PDFDocument from 'pdfkit';
 import fs from "fs";
-import { User } from '../models/user.models.js';
+import * as userService from '../services/userService.js';
 import { ApiError } from './ApiError.js';
 
 const pdf = async (_id) => {
     const doc = new PDFDocument;
 
     // Find the user by ID
-    const user = await User.findById(_id);
+    const user = await userService.getUserById(_id);
 
     // Check if user exists
     if (!user) {
@@ -21,8 +21,8 @@ const pdf = async (_id) => {
 
     // Write content to the PDF document
     
-    doc.text(`Hello ${user.fullName}`);
     doc.text(`Hello ${user.username}`);
+    doc.text(`Email: ${user.email}`);
 
     // End the PDF document
     doc.end();
