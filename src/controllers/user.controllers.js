@@ -185,6 +185,10 @@ const loginUser = asyncHandler(async (req, res) => {
 
       authData = await response.json();
 
+      if (!response.ok) {
+        console.warn("Firebase sign-in HTTP error", response.status, authData);
+      }
+
       if (response.ok) {
         const uid = authData.localId;
         const user = await userService.getUserById(uid);
